@@ -1,0 +1,3 @@
+# Minha SP
+
+Este projeto foi desenvolvido durante a disciplina PCS5031 - Introdução à Ciência dos Dados, da Escola Politécnica da Universidade de São Paulo. Os dados aqui armazenados são produto do projeto, que se baseia em um processo de agrupamento dos setores censitários do estado de São Paulo através de técnicas de aprendizado não supervisionado, seguido de interpretação e disponibilização dos resultados em uma plataforma aberta de visualização. Durante o projeto, todas as etapas do ciclo de vida dos dados foram considerados, e a disponibilização dos resultados finais, presentes neste repositório, constituem parte essencial da metodologia.

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+
+        #street_map
+        {
+		      position: absolute;
+		      bottom: 30px;
+			    right: 10px;
+			    width: 360px;
+			    height: 280px
+        }
+
+        #menu {
+            background: #fff;
+            position: absolute;
+            z-index: 1;
+            top: 10px;
+            left: 10px;
+            border-radius: 3px;
+            width: 60px;
+            border: 1px solid rgba(0,0,0,0.4);
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        #menu a {
+            font-size: 9px;
+            color: #404040;
+            display: block;
+            margin: 0;
+            padding: 0;
+            padding: 5px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        #menu a:last-child {
+            border: none;
+        }
+
+        #menu a:hover {
+            background-color: #f8f8f8;
+            color: #404040;
+        }
+
+        #menu a.active {
+            background-color: #3887be;
+            color: #ffffff;
+        }
+
+        #menu a.active:hover {
+            background: #3074a4;
+        }
+		  
+		#menu2 {
+            background: #fff;
+            position: absolute;
+            z-index: 1;
+            top: 10px;
+            right: 10px;
+            border-radius: 3px;
+            width: 60px;
+            border: 1px solid rgba(0,0,0,0.4);
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        #menu2 a {
+            font-size: 9px;
+            color: #404040;
+            display: block;
+            margin: 0;
+            padding: 0;
+            padding: 5px;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        #menu2 a:last-child {
+            border: none;
+        }
+
+        #menu2 a:hover {
+            background-color: #f8f8f8;
+            color: #404040;
+        }
+
+        #menu2 a.active {
+            background-color: #3887be;
+            color: #ffffff;
+        }
+
+        #menu2 a.active:hover {
+            background: #3074a4;
+          }  
+
+        #tbl_click {text-align:center; font-family: 'Open Sans', sans-serif; font-size: 7pt;}
+    </style>
+</head>
+<body>
+
+<style>
+
+.legend {
+    background-color: #fff;
+    border-radius: 3px;
+    bottom: 190px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    left: 10px;
+    z-index: 1;
+}
+
+.legend h4 {
+    margin: 0 0 0px;
+}
+
+.legend div span {
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+}
+
+</style>
+
+<style>
+
+.legend2 {
+    background-color: #fff;
+    border-radius: 3px;
+    bottom: 340px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    left: 10px;
+    z-index: 1;
+}
+
+.legend2 h4 {
+    margin: 0 0 0px;
+}
+
+.legend2 div span {
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+}
+
+</style>
+
+<style>
+
+.legend3 {
+    background-color: #fff;
+    border-radius: 3px;
+    bottom: 270px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    left: 10px;
+    z-index: 1;
+}
+
+.legend3 h4 {
+    margin: 0 0 0px;
+}
+
+.legend3 div span {
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+}
+
+</style>   
+        
+<style>
+
+.legend4 {
+    background-color: #fff;
+    border-radius: 3px;
+    bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    position: absolute;
+    left: 10px;
+    z-index: 1;
+}
+
+.legend4 h4 {
+    margin: 0 0 0px;
+}
+
+.legend4 div span {
+    border-radius: 50%;
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+}
+
+</style>
+    
+<div id="menu"></div>
+<div id="menu2"></div>
+<div id="map"></div>
+
+<div id='renda-legend' class='legend'>
+    <h4>Renda Média</h4>
+    <div><span style='background-color: rgba(0,130,0,0.50)'></span>Mais de 10.000</div>
+    <div><span style='background-color: rgba(0,205,0,0.50)'></span>5.000 - 10.000</div>
+    <div><span style='background-color: rgba(127,238,8,0.50)'></span>2.500 - 5.000</div>
+    <div><span style='background-color: rgba(144,238,144,0.50)'></span>1.250 - 2.500</div>
+    <div><span style='background-color: rgba(204,255,204,0.50)'></span>0 - 1.250</div>
+</div>
+
+<div id='cluster-legend' class='legend4'>
+    <h4>Classificação</h4>
+    <div><span style='background-color: rgba(10,130,255,0.50)'></span>Regiões Desenvolvidas</div>
+    <div><span style='background-color: rgba(0,205,0,0.50)'></span>Regiões Médias</div>
+    <div><span style='background-color: rgba(255,230,40,0.50)'></span>Regiões Subdesenvolvidas</div>
+    <div><span style='background-color: rgba(250,180,100,0.50)'></span>Regiões Desprotegidas</div>
+    <div><span style='background-color: rgba(200,50,50,0.50)'></span>Favelas Paulistanas</div>
+    <div><span style='background-color: rgba(50,150,50,0.50)'></span>Características Rurais</div>
+</div>
+    
+<div id='sexo-legend' class='legend2'>
+    <h4>Moradores de Rua</h4>
+    <div><span style='background-color: rgba(255,10,10,0.80)'></span>Feminino</div>
+    <div><span style='background-color: rgba(10,10,255,0.80)'></span>Masculino</div>
+</div>      
+  
+    
+<div id="street_map"></div>
+<div id="histograma"></div>
+<div id="descricao"></div>
+<p id="descricao"></p>
+
+<script async defer
+    key = "REMOVED FOR SECURITY REASONS";
+    src="https://maps.googleapis.com/maps/api/js?key=REMOVED_FOR_SECURITY_REASONS&callback=InitStreetMap">
+</script>
+
+<script>
+function InitStreetMap()
+ {
+   if (g_lat == 0) return;
+
+   var el = document.getElementById('street_map');
+   el.style.display = '';
+
+    var fenway = {lat: g_lat, lng: g_lng};
+    var panorama = new google.maps.StreetViewPanorama(
+        document.getElementById('street_map'), {
+          position: fenway,
+          pov: {
+            heading: 34,
+            pitch: 10
+          }
+        });
+  }
+
+function HideStreetMap(prop)
+{
+  var el = document.getElementById('street_map');
+  el.style.display = 'none';
+  console.log(el);
+}
+
+
+function OnClick(e)
+{
+    var cpf = "";
+    var idade = "";
+
+    g_lng = parseFloat(e.lngLat.lng);
+    g_lat = parseFloat(e.lngLat.lat);
+    InitStreetMap();
+
+    map.featuresAt(e.point,
+        {
+            radius: 10
+        },
+        function(err, features)
+        {
+          var html_text = '<TABLE id="tbl_click">';
+          var j = 0;
+          for(var i=0; i<features.length; i++)
+          {
+              var obj = features[i];
+              if (obj.layer.source == "Pessoas")
+              {
+                if (j == 0)
+                {
+                  html_text += '<TR><TD>Bairro</TD><TD>Idade</TD><TD>Gênero</TD></TR>';
+                }
+                bairro = obj.properties.BAIRRO;
+                idade = obj.properties.IDADE;
+                sexo = obj.properties.SEXO;
+                html_text += '<TR><TD>' + bairro + '</TD><TD>' + idade + '</TD><TD>' + sexo + '</TD></TR>';
+                j++;
+              }
+          }
+          if (j == 0)
+          {
+            for(var i=0; i<features.length; i++)
+            {
+                var obj = features[i];
+                if (obj.layer.source == "SetorRenda")
+                {
+                  if (j == 0)
+                  {
+                    html_text += '<TR><TD>Municipio</TD><TD>Bairro</TD><TD>Renda</TD></TR>';
+                  }
+                  console.log(obj);
+                  mun = obj.properties.NM_MUNICIP;
+                  bar = obj.properties.NM_DISTRIT;
+                  ren = obj.properties.CL_V009;
+                  html_text += '<TR><TD>' + mun + '</TD><TD>' + bar + '</TD><TD>' + ren + '</TD></TR>';
+                  j++;
+                }
+            }
+          }
+          html_text += '</TABLE>';
+
+          if (j)
+          {
+            var tooltip = new mapboxgl.Popup();
+            tooltip.setLngLat(e.lngLat);
+            tooltip.setHTML(html_text);
+            tooltip.addTo(map);
+          }
+          else
+            HideStreetMap();
+        }
+    );
+
+}
+
+function OnStyleLoad()
+{
+  LoadSetorCensitario();
+  LoadSetorCluster();
+  LoadFavela();
+  LoadPessoasIdadeSexo();
+  SetLayerStatus('SetorRenda', 6);
+  SetLayerStatus('SetorCluster', 7);
+  SetLayerStatus('Favela', 1);
+  SetLayerStatus('Pessoas', 2*niveis_cores);
+}
+
+function LoadPessoasIdadeSexo()
+{
+  var sLayerId = "Pessoas";
+	map.addSource(sLayerId,
+    {
+        'type': 'vector',
+        'url': sURL
+    });
+  var delta_cor = 255 / niveis_cores;
+  var j = 0;
+	for(var i=0; i<2*niveis_cores; i++)
+	{
+    var cor = 255 - (j+1)*delta_cor;
+    var sTransp = "0.37";
+    var cor_idade = "rgba(" + cor.toString() + ", 0, 0, " + sTransp + ")";
+    var sex = "FEM";
+    if (i > 5)
+    {
+      cor_idade = "rgba(0, 0, " + cor.toString() + ", " + sTransp + ")";
+      sex = "MASC";
+    }
+    var filter_idade = [ "all", [">=", "IDADE", j*20], ["<=", "IDADE", (j+1)*20], ["==", "SEXO", sex] ];
+
+    var layer_id = sLayerId + i.toString();
+    var vis = 'none';
+    if (layer_status.hasOwnProperty(layer_id)) //lembre que layer_status é um Object
+      vis = layer_status[layer_id];
+
+		map.addLayer(
+		{
+			'id': layer_id,
+			'type': 'circle',
+			'source': sLayerId,
+			'source-layer': sSource, // nome da layer data, nao confundir com o nome do arquivo
+			'interactive': true,
+      'layout':
+        {
+          'visibility' : vis
+        },
+			'paint':
+	      {
+	      	'circle-radius': 3,
+          'circle-color': cor_idade
+	      },
+	    'filter': filter_idade
+		},
+		'place_label_city_small_s');
+    layer_status[layer_id] = map.getLayoutProperty(layer_id, 'visibility');
+
+    j++;
+    if (j >= 5) j = 0;
+	}
+}
+
+function LoadSetorCensitario()
+{
+  var sSource = "ESTADO_SP_CLUSTER-dma7oo";
+  var sURL = "REMOVED FOR SECURITY REASONS";
+  var sLayerId = "SetorRenda";
+  var cor_outline = 'rgba(0x00,0x00,0x00,0.25)';
+
+	map.addSource(sLayerId,
+    {
+        'type': 'vector',
+        'url': sURL
+    });
+
+  var filter = Array();
+  filter[0] = [ "all", [">=", "CL_V009",    0], ["<=", "CL_V009", 1250] ];
+  filter[1] = [ "all", [">=", "CL_V009", 1251], ["<=", "CL_V009", 2500] ];
+  filter[2] = [ "all", [">=", "CL_V009", 2501], ["<=", "CL_V009", 5000] ];
+  filter[3] = [ "all", [">=", "CL_V009", 5001], ["<=", "CL_V009", 10000] ];
+  filter[4] = [">=", "CL_V009", 10001];
+  filter[5] = ["==", "CL_V009", ];
+
+  var cor_str = Array();
+  cor_str[0] = "rgba(204,255,204,0.37)";
+  cor_str[1] = "rgba(144,238,144,0.37)";
+  cor_str[2] = "rgba(127,238,8,0.37)";
+  cor_str[3] = "rgba(0,205,0,0.37)";
+  cor_str[4] = "rgba(0,130,0,0.37)";
+  cor_str[5] = "rgba(204,255,204,0.37)";
+
+	for(var i=0; i<6; i++)
+	{
+
+    var layer_id = sLayerId + i.toString();
+    var vis = 'none';
+    if (layer_status.hasOwnProperty(layer_id)) //lembre que layer_status é um Object
+      vis = layer_status[layer_id];
+
+		map.addLayer(
+		{
+			'id': layer_id,
+			'type': 'fill',
+			'source': sLayerId,
+			'source-layer': sSource, // nome da layer data, nao confundir com o nome do arquivo
+			'interactive': true,
+      'visibility' : 'visible',
+			'paint':
+        {
+        	'fill-color': cor_str[i],
+          'fill-outline-color': cor_outline
+        }
+      ,
+	    'filter': filter[i]
+		},'place_label_city_small_s');
+    layer_status[layer_id] = map.getLayoutProperty(layer_id, 'visibility');
+	}
+}
+
+function LoadSetorCluster()
+{
+  var sSource = "ESTADO_SP_CLUSTER-dma7oo";
+  var sURL = "REMOVED FOR SECURITY REASONS";
+  var sLayerId = "SetorCluster";
+  var cor_outline = 'rgba(0x00,0x00,0x00,0.25)';
+
+	map.addSource(sLayerId,
+    {
+        'type': 'vector',
+        'url': sURL
+    });
+
+  var filter = Array();
+  filter[0] = [ "all", [">=", "CL_sc_mosa",    1], ["<=", "CL_sc_mosa", 1] ];
+  filter[1] = [ "all", [">=", "CL_sc_mosa", 2], ["<=", "CL_sc_mosa", 2] ];
+  filter[2] = [ "all", [">=", "CL_sc_mosa", 3], ["<=", "CL_sc_mosa", 3] ];
+  filter[3] = [ "all", [">=", "CL_sc_mosa", 4], ["<=", "CL_sc_mosa", 4] ];
+  filter[4] = [ "all", [">=", "CL_sc_mosa", 5], ["<=", "CL_sc_mosa", 5] ];
+  filter[5] = [">=", "CL_sc_mosa", 6];
+  filter[6] = ["==", "CL_sc_mosa", ];
+
+  var cor_str = Array();
+  cor_str[0] = "rgba(255,230,40,0.37)";
+  cor_str[1] = "rgba(250,180,100,0.37)";
+  cor_str[2] = "rgba(30,170,255,0.30)";
+  cor_str[3] = "rgba(50,150,50,0.30)"
+  cor_str[4] = "rgba(100,255,100,0.37)";
+  cor_str[5] = "rgba(200,50,50,0.37)";
+  cor_str[6] = "rgba(50,150,50,0.37)";
+
+	for(var i=0; i<7; i++)
+	{
+
+    var layer_id = sLayerId + i.toString();
+    var vis = 'none';
+    if (layer_status.hasOwnProperty(layer_id)) //lembre que layer_status é um Object
+      vis = layer_status[layer_id];
+
+		map.addLayer(
+		{
+			'id': layer_id,
+			'type': 'fill',
+			'source': sLayerId,
+			'source-layer': sSource, // nome da layer data, nao confundir com o nome do arquivo
+			'interactive': true,
+      'visibility' : 'visible',
+			'paint':
+        {
+        	'fill-color': cor_str[i],
+          'fill-outline-color': cor_outline
+        }
+      ,
+	    'filter': filter[i]
+		},'place_label_city_small_s');
+    layer_status[layer_id] = map.getLayoutProperty(layer_id, 'visibility');
+	}
+}    
+       
+function LoadFavela()
+{
+  var sSource = "CIDADE_SP_FAVELAS-br6sew";
+  var sURL = "REMOVED FOR SECURITY REASONS";
+  var sLayerId = "Favela";
+  var cor_outline = 'rgba(0x00,0x00,0x00,0.25)';
+
+	map.addSource(sLayerId,
+    {
+        'type': 'vector',
+        'url': sURL
+    });
+
+  var filter = Array();
+  filter[0] = ["!=", "ID", ""];
+
+  var cor_str = Array();
+  cor_str[0] = "rgba(130,60,60,0.37)";
+
+	for(var i=0; i<1; i++)
+	{
+
+    var layer_id = sLayerId + i.toString();
+    var vis = 'none';
+    if (layer_status.hasOwnProperty(layer_id)) //lembre que layer_status é um Object
+      vis = layer_status[layer_id];
+
+		map.addLayer(
+		{
+			'id': layer_id,
+			'type': 'fill',
+			'source': sLayerId,
+			'source-layer': sSource, // nome da layer data, nao confundir com o nome do arquivo
+			'interactive': true,
+      'visibility' : 'visible',
+			'paint':
+        {
+        	'fill-color': cor_str[i],
+          'fill-outline-color': cor_outline
+        }
+      ,
+	    'filter': filter[i]
+		},'place_label_city_small_s');
+    layer_status[layer_id] = map.getLayoutProperty(layer_id, 'visibility');
+	}
+}
+
+    
+function SetMapStyle(style_id, btn_text, cor)
+{
+	var link = document.createElement('a');
+	link.href = '#';
+	link.className = 'active';
+	link.textContent = btn_text;
+	link.style.background = cor;
+
+	link.onclick = function(e)
+	{
+		map.setStyle('mapbox://styles/mapbox/' + style_id + '-v8');
+	};
+
+	var menu2 = document.getElementById('menu2');
+	menu2.appendChild(link);
+}
+
+function CreateLayerButton(base_layer_id, n_layers, btn_text, cor)
+{
+	var link = document.createElement('a');
+	link.href = '#';
+	link.className = 'active';
+	link.textContent = btn_text;
+  link.style.background = "#808080";
+
+	link.onclick = function(e)
+	{
+		e.preventDefault();
+		e.stopPropagation();
+
+		for(var i=0; i<n_layers; i++)
+		{
+			var layer_id = base_layer_id + i.toString();
+			var visibility = map.getLayoutProperty(layer_id, 'visibility');
+			if (visibility == 'visible')
+			{
+				map.setLayoutProperty(layer_id, 'visibility', 'none');
+				this.className = '';
+				this.style.background = "#808080";
+			}
+			else
+			{
+				map.setLayoutProperty(layer_id, 'visibility', 'visible');
+				this.className = 'active';
+				this.style.background = cor;
+			}
+			layer_status[layer_id] = map.getLayoutProperty(layer_id, 'visibility');
+		}
+	};
+
+	var layers = document.getElementById('menu');
+	layers.appendChild(link);
+}
+
+function SetLayerStatus(base_layer_id, n_layers)
+{
+  map.resize();
+	for(var i=0; i<n_layers; i++)
+	{
+		var layer_id = base_layer_id + i.toString();
+    if (layer_status.hasOwnProperty(layer_id)) //lembre que layer_status é um Object
+    {
+      map.setLayoutProperty(layer_id, 'visibility', layer_status[layer_id]);
+    }
+	}
+}
+
+var sSource = "CIDADE_SP_MR-1t4enm";
+var sURL = "REMOVED FOR SECURITY REASONS";
+var layer_status = [];
+var niveis_cores = 5;
+
+token = 'REMOVED FOR SECURITY REASONS';
+mapboxgl.accessToken = token;
+var map = new mapboxgl.Map(
+{
+  container: 'map', // container id
+  style: 'mapbox://styles/mapbox/light-v8', //stylesheet location
+  center: [-46.679, -23.584], // starting position
+  pitch: 0, // perpendicular ao plano do mapa
+  zoom: 10, // starting zoom
+	minZoom: 2
+});
+
+g_lng = 0;
+g_lat = 0;
+
+map.on('style.load', OnStyleLoad);
+map.on('click', OnClick);
+map.addControl(new mapboxgl.Navigation());
+map.keyboard.enable(); // atalhos de teclado
+// disable map rotation using right click + drag
+map.dragRotate.disable();
+// disable map rotation using touch rotation gesture
+map.touchZoomRotate.disableRotation();
+
+var zoomThreshold = 15;
+
+var RendaLegendEl = document.getElementById('renda-legend');
+map.on('zoom', function(){
+	if (map.hasLayer("SetorRenda") == true){
+		RendaLegendEl.style.display = 'none';
+	} else {
+		RendaLegendEl.style.display = 'block';
+	}
+});
+
+//SetMapStyle('light',     'Claro',    'green');
+//SetMapStyle('dark',      'Escuro',   'green');
+//SetMapStyle('streets',   'Ruas',     'green');
+//SetMapStyle('satellite', 'Satelite', 'green');
+
+CreateLayerButton('SetorRenda', 6, 'Renda', 'green');
+CreateLayerButton('SetorCluster', 7, 'Tipo', 'green');
+CreateLayerButton('Favela', 1, 'Favela', 'green');
+CreateLayerButton('Pessoas', 2*niveis_cores, 'Moradores de rua', 'blue');
+
+map.resize();
+</script>
+
+</body>
+</html>
